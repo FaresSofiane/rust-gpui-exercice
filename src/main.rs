@@ -8,8 +8,17 @@ use gpui_kit::{AppContext, WindowOptions, application, assets, init, open_window
 
 
 fn main() {
+
+    let games: Vec<String> = vec![
+        String::from("Red Dead Redemption 2"),
+        String::from("Cyberpunk 2077"),
+        String::from("Minecraft"),
+        String::from("GTA V"),
+        String::from("Elden Ring"),
+    ];
+
     application()
-        .with_assets(assets::Assets)
+        .with_assets(assets::AllAssets)
         .run(|cx| {
             init(cx);
 
@@ -18,7 +27,7 @@ fn main() {
                 cx,
                 |_, cx| {
                     cx.new(|_| exo1 {
-                        count: 0,
+                        games
                     })
                 },
             )
