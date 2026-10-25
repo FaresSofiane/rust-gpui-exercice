@@ -1,11 +1,27 @@
-use std::fmt::format;
-use gpui_kit::{div, Context, IntoElement, Render, Window, ParentElement, Styled, FontWeight, rgb, relative};
+use gpui_kit::{div, Context, IntoElement, Render, Window, ParentElement, Styled, FontWeight, rgb, relative, AppContext, Entity};
 use gpui_kit::assets::IconName;
 use gpui_kit::component::{Icon};
-use gpui_kit::prelude::FluentBuilder;
+use gpui_kit::component::button::{Button, ButtonVariants};
+use gpui_kit::component::input::{Input, InputState};
 
 pub struct exo2 {
-    pub games: Vec<String>
+    pub games: Vec<String>,
+    pub game_input: Entity<InputState>
+}
+
+impl exo2 {
+    pub fn new(window: &mut Window, cx: &mut Context<Self>) -> Self {
+        let game_input = cx.new(|cx| {
+            InputState::new(window, cx)
+                .placeholder("Nom du jeu...")
+        });
+
+        Self {
+            games: Vec::new(),
+            game_input
+        }
+    }
+
 }
 
 fn title() -> impl IntoElement {
@@ -67,7 +83,10 @@ fn game_element(game_name: String, index: usize) -> impl IntoElement {
 }
 
 impl Render for exo2 {
+
+
     fn render(&mut self, window: &mut Window, cx: &mut Context<Self>) -> impl IntoElement {
+
         div()
             .child(
                 div()
@@ -82,6 +101,47 @@ impl Render for exo2 {
                     .border_color(rgb(0xE4E4E7))
                     .rounded_2xl()
             )
+            .child(
+                div()
+                    .flex()
+                    .flex_row()
+                    .gap_3()
+                    .items_center()
+                    .justify_center()
+                    .mt_3()
+                    .child(
+                        div()
+                            .child(Input::new(&self.game_input))
+                            .flex_1()
+                    )
+                    .child(div()
+                        .child(
+                            Button::new("add_game")
+                                .primary()
+                                .label("Ajouter")
+                                .on_click(cx.listener(|this, ce, window, cx| {
+                                    let game_to_add = this.game_input.read(cx).value().to_string();
+                                    this.games.push(String::from(game_to_add.clone()));
+                                    this.game_input.update(cx, |x3, x4| {
+                                        x3.set_value("", window, x4);
+                                    });
+                                    cx.notify()
+                                }))
+                        ))
+
+                    .child(div()
+                        .child(
+                            Button::new("clear")
+                                .danger()
+                                .label("Vider")
+                                .on_click(cx.listener(|this, ce, window, cx| {
+                                   this.games.clear();
+                                    cx.notify()
+                                }))
+                        ))
+                
+            )
+
             .p_4()
 
     }

@@ -25,9 +25,9 @@ fn main() {
             open_window(
                 WindowOptions::default(),
                 cx,
-                |_, cx| {
-                    cx.new(|_| exo1 {
-                        games
+                |window, cx| {
+                    cx.new(|cx| {
+                        exo2::new(window, cx)
                     })
                 },
             )
