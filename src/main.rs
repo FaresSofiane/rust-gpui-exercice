@@ -1,11 +1,16 @@
 pub mod exercice1;
 pub mod exercice2;
+pub mod exercice3;
+pub mod exercice4;
 
 use exercice1::exo1;
 use exercice2::exo2;
+use exercice3::exo3;
 
 use gpui_kit::{AppContext, WindowOptions, application, assets, init, open_window};
-
+use gpui_kit::component::TitleBar;
+use crate::exercice3::Page;
+use crate::exercice4::exo4;
 
 fn main() {
 
@@ -23,11 +28,11 @@ fn main() {
             init(cx);
 
             open_window(
-                WindowOptions::default(),
+                TitleBar::window_options(),
                 cx,
                 |window, cx| {
                     cx.new(|cx| {
-                        exo2::new(window, cx)
+                        exo4 {}
                     })
                 },
             )
